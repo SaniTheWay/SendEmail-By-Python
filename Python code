@@ -1,0 +1,36 @@
+# Sending Email with Attachment through gmail using _Pyhton_
+
+#importing libraries (_smtplib_)
+
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+
+fromadd = 'senders_email_Address'
+toadd = 'receiver_email_Address'
+
+msg = MIMEMultipart()
+msg['FROM'] = fromadd
+msg['TO'] = toadd
+msg['SUBJECT'] ='TEST SUBJECT OF YOUR MAIL'
+body = 'TEST Message you have to send as a body of your Message.'
+msg.attach(MIMEText(body,'plain'))
+filename='name_of_yourAttachment With Extension'
+attachment = open(r"full_file_path","rb")
+p = MIMEBase('application', "pdf", Name=filename)
+p.set_payload((attachment).read())
+encoders.encode_base64(p)
+p.add_header('Content-Disposition','attachment; filename= %s' % filename)
+msg.attach(p)
+#calling SMTB server
+s=smtplib.SMTP('smtp.gmail.com', 587)     #check respected domain and port no. over internet
+s.ehlo()
+s.starttls()
+s.login(fromadd,'#_sender's_password_#')
+text=msg.as_string()
+s.sendmail(fromadd,toadd,text)
+s.quit()
+print("Email sent!")                #it may take some time to respond after you execute
+                                    #this program, wait for some time.
